@@ -1,15 +1,15 @@
 {
-    "Browsers": [
+    "browsers": [
         {
-            "Name": "Edge",
-            "Path": ""
+            "name": "Edge",
+            "path": ""
         }
     ],
-    "LinkPatterns": [
+    "linkPatterns": [
         {
-            "PatternType" : "StartsWith",
-            "Pattern": "",
-            "Browser": "Edge"
+            "patternType" : "StartsWith",
+            "pattern": "",
+            "browser": "Edge"
         }
     ]
 }
