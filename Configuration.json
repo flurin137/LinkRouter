@@ -1,0 +1,15 @@
+{
+    "Browsers": [
+        {
+            "Name": "Edge",
+            "Path": ""
+        }
+    ],
+    "LinkPatterns": [
+        {
+            "PatternType" : "StartsWith",
+            "Pattern": "",
+            "Browser": "Edge"
+        }
+    ]
+}
