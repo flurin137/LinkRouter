@@ -12,24 +12,25 @@ pub struct Configuration {
 #[serde(rename_all = "camelCase")]
 pub struct Browser {
     pub name: String,
-    pub path: PathBuf,
+    pub path: String,
 }
 
 #[derive(Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct LinkPattern {
-    pub pattern_type: String,
+    pub pattern_type: PatternType,
     pub pattern: String,
     pub browser: String,
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, Clone)]
 pub enum PatternType {
     StartsWith,
+    Contains
 }
 
 pub struct MatchedPattern {
-    pub pattern_type: String,
+    pub pattern_type: PatternType,
     pub pattern: String,
     pub browser: Option<Browser>,
 }

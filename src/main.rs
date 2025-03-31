@@ -1,8 +1,10 @@
+mod executor;
 mod models;
 use anyhow::Result;
 use clap::Parser;
-use models::{Browser, Configuration, LinkPattern, MatchedPattern};
-use std::{fs, slice::Iter};
+use executor::forward_to_browser;
+use models::{Browser, Configuration, MatchedPattern};
+use std::fs;
 
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
@@ -17,16 +19,38 @@ fn main() -> Result<()> {
 
     let args = Args::parse();
 
-    println!("Hello {}!", args.link);
+    let patterns = match_patterns(configuration);
+    let browser = get_browser_for_link(&args.link, patterns);
 
-    Ok(())
+    forward_to_browser(&args.link, browser)
 }
 
-pub fn match_patterns(patterns: Vec<LinkPattern>, browsers: Vec<Browser>) -> Vec<MatchedPattern> {
-    patterns
+fn get_browser_for_link(link: &str, patterns: Vec<MatchedPattern>) -> Option<Browser> {
+    for pattern in patterns {
+        match pattern.pattern_type {
+            models::PatternType::StartsWith => {
+                if link.starts_with(&pattern.pattern) {
+                    return pattern.browser.clone();
+                }
+            }
+            models::PatternType::Contains => {
+                if link.contains(&pattern.pattern) {
+                    return pattern.browser.clone();
+                }
+            }
+        };
+    }
+
+    None
+}
+
+pub fn match_patterns(configuration: Configuration) -> Vec<MatchedPattern> {
+    configuration
+        .link_patterns
         .iter()
         .map(|d| {
-            let browser = browsers
+            let browser = configuration
+                .browsers
                 .iter()
                 .find(|browser| browser.name == d.browser)
                 .map(|d| d.to_owned());

@@ -2,13 +2,13 @@
     "browsers": [
         {
             "name": "Edge",
-            "path": ""
+            "path": "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe"
         }
     ],
     "linkPatterns": [
         {
             "patternType" : "StartsWith",
-            "pattern": "",
+            "pattern": "https://dev.azure.com/",
             "browser": "Edge"
         }
     ]
