@@ -1,5 +1,4 @@
 use serde::Deserialize;
-use std::path::PathBuf;
 
 #[derive(Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
