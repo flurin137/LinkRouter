@@ -1,9 +1,10 @@
 mod executor;
 mod models;
+mod pattern_matcher;
 use anyhow::Result;
 use clap::Parser;
 use executor::forward_to_browser;
-use models::{Browser, Configuration, MatchedPattern};
+use models::{Configuration, MatchedPattern};
 use std::fs;
 use url::Url;
 
@@ -23,7 +24,7 @@ fn main() -> Result<()> {
     let link = sanitize_link(args.link);
 
     let patterns = match_patterns(configuration);
-    let browser = get_browser_for_link(&link, patterns);
+    let browser = pattern_matcher::match_pattern(&link, patterns);
 
     forward_to_browser(&link, browser)
 }
@@ -37,7 +38,7 @@ fn sanitize_link(mut link: String) -> String {
     if let Ok(url) = Url::parse(&link) {
         if let Some(query) = url.query() {
             let splits: Vec<&str> = query.split('&').filter(|d| d.starts_with("url=")).collect();
-            
+
             if splits.len() == 1 {
                 println!("Link: {}", splits[0]);
                 if let Ok(url_cow) = urlencoding::decode(&splits[0][4..]) {
@@ -50,25 +51,6 @@ fn sanitize_link(mut link: String) -> String {
     println!("Link: {}", link);
 
     link.to_owned()
-}
-
-fn get_browser_for_link(link: &str, patterns: Vec<MatchedPattern>) -> Option<Browser> {
-    for pattern in patterns {
-        match pattern.pattern_type {
-            models::PatternType::StartsWith => {
-                if link.starts_with(&pattern.pattern) {
-                    return pattern.browser.clone();
-                }
-            }
-            models::PatternType::Contains => {
-                if link.contains(&pattern.pattern) {
-                    return pattern.browser.clone();
-                }
-            }
-        };
-    }
-
-    None
 }
 
 pub fn match_patterns(configuration: Configuration) -> Vec<MatchedPattern> {

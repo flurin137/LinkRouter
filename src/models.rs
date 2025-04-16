@@ -25,7 +25,8 @@ pub struct LinkPattern {
 #[derive(Deserialize, Debug, Clone)]
 pub enum PatternType {
     StartsWith,
-    Contains
+    Contains,
+    Regex
 }
 
 pub struct MatchedPattern {
