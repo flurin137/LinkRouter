@@ -26,7 +26,7 @@ pub struct LinkPattern {
 pub enum PatternType {
     StartsWith,
     Contains,
-    Regex
+    Regex,
 }
 
 pub struct MatchedPattern {
