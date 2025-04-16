@@ -40,11 +40,11 @@ pub fn match_patterns(configuration: Configuration) -> Vec<MatchedPattern> {
                 .find(|browser| browser.name == d.browser)
                 .map(|d| d.to_owned());
 
-            return MatchedPattern {
+            MatchedPattern {
                 browser,
                 pattern: d.pattern.clone(),
                 pattern_type: d.pattern_type.clone(),
-            };
+            }
         })
         .collect()
 }
