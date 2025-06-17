@@ -1,6 +1,5 @@
+use crate::{helpers::shorten, models::Browser};
 use log::info;
-
-use crate::models::Browser;
 
 pub fn forward_to_browser(link: &str, browser: Option<Browser>) -> anyhow::Result<()> {
     let _ = match browser {
@@ -17,14 +16,4 @@ pub fn forward_to_browser(link: &str, browser: Option<Browser>) -> anyhow::Resul
     };
 
     Ok(())
-}
-
-fn shorten(string: &str) -> String {
-    if string.len() < 50 {
-        return string.into();
-    }
-
-    let mut shortened = String::from(&string[0..47]);
-    shortened.push_str("...");
-    shortened
 }

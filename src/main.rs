@@ -1,14 +1,18 @@
 mod executor;
+mod helpers;
 mod link_sanitizer;
 mod models;
 mod pattern_matcher;
-use anyhow::Result;
+
+use anyhow::{Result, anyhow};
 use clap::Parser;
 use executor::forward_to_browser;
 use log::info;
 use models::{Configuration, MatchedPattern};
 use simple_logger::SimpleLogger;
 use std::{env, fs, path::PathBuf};
+
+use crate::helpers::shorten;
 
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
@@ -21,11 +25,14 @@ struct Args {
 }
 
 fn main() -> Result<()> {
-    let level = log::LevelFilter::Info;
+    let args = Args::parse();
 
+    let level = match args.verbose {
+        true => log::LevelFilter::Info,
+        false => log::LevelFilter::Warn,
+    };
     SimpleLogger::new().with_level(level).init()?;
 
-    let args = Args::parse();
     let link = link_sanitizer::sanitize_link(args.link);
 
     let configuration = get_configuration(args.configuration)?;
@@ -38,7 +45,11 @@ fn main() -> Result<()> {
 fn get_configuration(path: Option<PathBuf>) -> Result<Configuration, anyhow::Error> {
     let config_path = match path {
         Some(path) => {
-            info!("Using configuration file at path '{path:?}'");
+            let path_str = path
+                .as_os_str()
+                .to_str()
+                .ok_or_else(|| anyhow!("Unable to get path string"))?;
+            info!("Using configuration file at path '{}'", shorten(path_str));
             path
         }
         None => {
